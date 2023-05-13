@@ -33,7 +33,9 @@ const prepareDOMElements = () => {
 const prepareDOMEvents = () => {
     $addBtn.addEventListener('click', addNewTask);
     $todoInput.addEventListener('keyup', enterCheck);
-    $ulList.addEventListener('click', checkClick)
+    $ulList.addEventListener('click', checkClick);
+    $addPopupBtn.addEventListener('click', changeTodo);
+    $closeTodoBtn.addEventListener('click', closePopup);
 }
 
 const addNewTask = () => {
@@ -45,10 +47,10 @@ const addNewTask = () => {
         $ulList.appendChild($newTask);
 
         $todoInput.value = '';
-        $alertInfo.innerText = '';
+        $alertInfo.innerText = ''
         createToolsArea();
     } else {
-        $alertInfo.innerText = 'Wpisz treść zadania!';
+        $alertInfo.innerText = 'Wpisz treść zadania!'
     }
 }
 
@@ -60,12 +62,12 @@ const enterCheck = () => {
 
 const createToolsArea = () => {
     const toolsPanel = document.createElement('div');
-    toolsPanel.classList.add.('tools');
+    toolsPanel.classList.add('tools');
     $newTask.appendChild(toolsPanel);
 
     const completeBtn = document.createElement('button');
     completeBtn.classList.add('complete');
-    completeBtn.innerHTML = '<i class="fas fa-check"></i>'
+    completeBtn.innerHTML = '<i class="fas fa-check"></i>';
 
     const editBtn = document.createElement('button');
     editBtn.classList.add('edit');
@@ -86,10 +88,28 @@ const checkClick = e => {
             e.target.closest('li').classList.toggle('completed');
             e.target.closest('button').classList.toggle('completed');
         } else if (e.target.closest('button').classList.contains('edit')) {
-            console.log('edit');
+            editTask(e);
         } else if (e.target.closest('button').classList.contains('delete')) {
             deleteTask(e);
         }
+    }
+}
+
+const editTask = e => {
+    const oldTodo = e.target.closest('li').id;
+    $editedTodo = document.getElementById(oldTodo);
+    $popupInput.value = $editedTodo.firstChild.textContent;
+
+    $popup.style.display = 'flex';
+}
+
+const changeTodo = () => {
+    if ($popupInput.value !== '') {
+        $editedTodo.firstChild.textContent = $popupInput.value;
+        $popup.style.display = 'none';
+        $popupInfo.innerText = '';
+    } else {
+        $popupInfo.innerText = 'Musisz podać jakąś treść!';
     }
 }
 
@@ -101,5 +121,11 @@ const deleteTask = e => {
         $alertInfo.innerText = 'Brak zadań na liście.';
     }
 }
+
+const closePopup = () => {
+    $popup.style.display = 'none';
+    $popupInfo.innerText = '';
+}
+
 
 document.addEventListener('DOMContentLoaded', main);
